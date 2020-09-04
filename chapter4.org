@@ -1,0 +1,136 @@
+* Monitoring Nodes and Containers
+
+We will monitor various host resources:
+
+- CPU
+- Memory
+- Disk
+- Availability
+
+* Monitoring nodes
+
+- Prometheus uses tools called exporters to expose metrics on host and
+  applications.
+- The *Node Exporter* is written in Go and a library of collectors for
+  various host metrics including CPU, memory and disk.
+- Node exporter also has a *textfile* collector that allows you to
+  export static metrics which is useful for sending information about
+  the node.
+
+** Insalling the Node Exporter
+
+- [[https://github.com/prometheus/node_exporter][Github link]]
+
+  #+begin_example
+  $ node_exporter --version
+  node_exporter, version 1.0.1 (branch: HEAD, revision: 3715be6ae899f2a9b9dbfd9c39f3e09a7bd4559f)
+  build user:       root@1f76dbbcfa55
+  build date:       20200616-12:44:12
+  go version:       go1.14.4
+  #+end_example
+
+- The node_exporter exporter runs, by default on 9100 and exposes
+  metrics on the /metrics path.
+
+** Configuring the TextFile collector
+
+- The textfile collector is very useful because it allows us to expose
+  custom metrics.
+- The collector works by scanning files in a specified directory,
+  extracting any string that are formatted as Prometheus metrics and
+  exposing them to be scraped.
+
+  #+begin_src
+  $ mkdir textfile_collector
+  $ # emacs and add metric file
+  $ bat textfile_collector/metadata.prom
+───────┬───────────────────────────────────────────────────
+       │ File: textfile_collector/metadata.prom
+───────┼───────────────────────────────────────────────────
+   1   │ metadata{role="docker_server",datacenter="NJ"} 1
+  #+end_src
+
+  Metric name: metadata
+
+  #+begin_src
+  $ node_exporter --collector.textfile.directory ./textfile_collector --collector.systemd --collector.systemd.unit-whitelist="(docker|ssh|rsyslog).service"
+  #+end_src
+
+  You can see the raw metrics at [[http://localhost:9100/metrics][http://localhost:9100/metrics]]
+
+  Now can you edit the prometheus.yml configuration file to scrape the above metrics:
+
+  #+begin_src
+  scrape_configs:
+   - job_name: 'prometheus'
+     static_configs:
+     -targets: ['localhost:9090']
+   - job_name: 'node'
+     static_configs:
+     -targets: ['localhost:9100']
+  #+end_src
+
+** Filtering collectors on the server
+
+   Edit the prometheus.yml configuration file:
+
+   #+begin_src
+   - job_name: 'node'
+     static_configs:
+      -targets: ['localhost:9100']
+     params:
+      collect[]:
+       -cpu
+       -meminfo
+   #+end_src
+
+** Scrape Lifecycle
+
+   TODO: Add diagram (page 104)
+
+** Labels
+
+- Changing a label or adding a new label creates a new time
+  series. So, labels should be used judiciously and remain as constant
+  as possible.
+
+** Label taxonomies
+
+   We already get two topological labels for free with every metric:
+   job and instance.
+
+   TODO: Add diagram (page 106)
+
+** Relabelling
+
+*** Dropping metric   
+
+#+begin_src
+   - job_name: 'node'
+     static_configs:
+      -targets: ['localhost:9100']
+     metric_relabel_configs:
+      -source_labels: [__name]
+        regex: '(container_tasks_state|container_mem_failure_total)'
+        action: drop
+#+end_src
+
+*** Replacing label values
+
+    #+begin_src
+     metric_relabel_configs:
+      -source_labels: [id]
+        regex: '/docker/([a-z0-9]+);'
+        replacement: '$1'
+        target_label: container_id
+    #+end_src
+
+    Puts a new label: 'container_id'
+
+*** Dropping labels
+
+    #+begin_src
+    metric_relabel_configs:
+     -regex: 'kernelVersion'
+      action: labeldrop
+    #+end_src
