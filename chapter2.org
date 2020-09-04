@@ -1,0 +1,141 @@
+* Introduction to Prometheus
+
+- Developed internally at SoundCloud.
+- Written in Go
+- Incubated under CNCF
+
+* Prometheus architecture
+
+- Prometheus works by scraping or pulling time series data exposed
+  from applications.
+- The time series data is exposed by the application themselves often
+  via client libraries or via proxies called exporters as HTTP
+  endpoints.
+- Prometheus also has a push gateway you can use to receive small
+  volumes of data - for example, data from targets that can't be
+  pulled, like transient jobs or targets behind firwall.
+
+** Metrics collection
+
+- Prometheus calls the source of metrics it can scrape endpoints.
+- To scrape an endpoint, prometheus defines configuration called a
+  target.
+- Groups of targets are called jobs.
+- The resulting time series data is collected and stored locally in
+  the prometheus server. It can also be sent from the server to
+  external storage or to another time series database.
+
+** Service discovery
+
+Discovery of resources to be monitored can be handled in a varitey of
+ways:
+
+- A user provided static list of resources.
+- File based discover
+- Automated discovery. Eg: consul
+
+** Aggregation and alerting
+
+- The server can also query and aggregate the time series data and can
+  create rules to record commonly used queries and aggregations.
+- Prometheus can also define rules for alerting.
+- Prometheus doesn't come with an inbuilt alerting tool. Instead,
+  alerts are pushed from the prometheus server to a separate server
+  called Alertmanager.
+- Alertmanager can manager, consolidate and distribute alerts to a
+  variety of destinations.
+
+** Quering data
+
+- Prometheus serves comes with an inbuilt querying language called PromQL.
+- The server also comes with an expression browser, a graphing
+  interface for you to explore the data.
+
+** Autonomy
+
+  Each prometheus server is designed to be as autonomous as possible.
+
+** Redundancy and high availability
+
+- Redundancy and high availability center on alerting resilence than
+  data durability.
+- The prometheus team recommends deploying Prometheus server to
+  specific purposes and teams rather than to a single monolithic
+  prometheus server.
+
+** Visualization
+
+Visualization is provided via an inbuilt expression brower and
+integration with the open source dashboard Grafana.
+
+* The Prometheus data model
+
+- Prometheus collects time series data. To handle this data it has a
+  multi dimensional time series data model.
+- The time series data model combines time series name and key/value
+  pairs called labels; these labels provide the dimensions.
+- Each time series is uniquely identified by the combination of time
+  series name and any assigned labels.
+
+** Metric names  
+
+The *time series name* usually describe the general nature of the time
+series data being collected. Ex: /website_visits_total/ as the total
+number of website visits.
+
+** Labels
+
+- Labels enable the Prometheus dimensional data model. The add context
+  to specific time series.
+- Example: /website_visits_total/ time series could have labels that
+  identify the name of the website, IP of the requestor etc.
+
+Labels comes in two broad types:
+- Instrumentation labels: comes from the resource being
+  monitored. They are added to the time series before they are scraped
+  such as by a client or exporter. Eg: HTTP-related time series might
+  have a label showing specific HTTP verb used.
+- Target labels: related more to your architecture. Target labels are
+  added by Prometheus during and after the scrape. Eg: Label
+  identifying the data center where the time series originated.
+
+** Samples
+
+The actual value of the time series is called a sample. It consists of
+- A float64 value.
+- A millisecond-precision timestamp.
+
+** Notation
+
+Time series notation
+
+#+begin_src
+<time seriesa name>{<label name>=<label value>, ...}
+#+end_src
+
+Example
+
+#+begin_example
+total_website_visits{site="MegaApp", location="NJ", instance="webserver", job="web"}
+#+end_example
+
+All time series generally have the following label:
+- *instance* : Identifies the source host or application
+- *job*: name of the job that scraped the specific time series.
+
+** Metrics retention
+
+- Prometheus is designed for short term monitoring and alerting
+  needs. By default it keeps 15 days of time series locally in its
+  database.
+- If you want to keep it longer, you can send the required data to
+  third party applications.
+
+* Security model
+
+Two braod assumptions are made about trust:
+- That untrusted users will be able to access the Prometheus server's
+  HTTP API and hence all the data in the database.
+- That only trusted users will have access to the cli, configuration
+  files, rule files and the runtime configuration of Prometheus and
+  it's componenets.
