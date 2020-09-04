@@ -1,0 +1,16 @@
+* Monitoring with Prometheus
+
+This contains my notes for the book Monitoring with Prometheus by
+James TurnBull. You can access it in [[todo link][todo link]]
+
+** Chapters
+
+- [[file:chapter1.org][Introduction]]
+- [[file:chapter2.org][Introduction to Prometheus]]
+- [[file:chapter3.org][Installation and Getting Started]]
+
+** Contributing
+
+Contributions welcome. You would have to edit the [org
+files](https://en.wikipedia.org/wiki/Org-mode "org files") in the repo
+and send a PR!
