@@ -1,0 +1,139 @@
+* Installation and Getting started
+
+Available as a single binary. Download and uncompress it on your
+machine:
+
+#+begin_example
+$ cd prometheus-2.20.1.linux-amd64/
+$ ./prometheus --version
+prometheus, version 2.20.1 (branch: HEAD, revision: 983ebb4a513302315a8117932ab832815f85e3d2)
+  build user:       root@7cbd4d1c15e0
+  build date:       20200805-17:26:58
+  go version:       go1.14.6
+$ ls
+console_libraries/  consoles/  LICENSE  NOTICE  prometheus*  prometheus.yml  promtool*  tsdb*
+#+end_example
+
+* Configuring prometheus
+
+  #+begin_example
+$ bat prometheus.yml
+───────┬────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+       │ File: prometheus.yml
+───────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   1   │ # my global config
+   2   │ global:
+   3   │   scrape_interval:     15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+   4   │   evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
+   5   │   # scrape_timeout is set to the global default (10s).
+   6   │
+   7   │ # Alertmanager configuration
+   8   │ alerting:
+   9   │   alertmanagers:
+  10   │   - static_configs:
+  11   │     - targets:
+  12   │       # - alertmanager:9093
+  13   │
+  14   │ # Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+  15   │ rule_files:
+  16   │   # - "first_rules.yml"
+  17   │   # - "second_rules.yml"
+  18   │
+  19   │ # A scrape configuration containing exactly one endpoint to scrape:
+  20   │ # Here it's Prometheus itself.
+  21   │ scrape_configs:
+  22   │   # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  23   │   - job_name: 'prometheus'
+  24   │
+  25   │     # metrics_path defaults to '/metrics'
+  26   │     # scheme defaults to 'http'.
+  27   │
+  28   │     static_configs:
+  29   │     - targets: ['localhost:9090']
+───────┴────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  #+end_example
+
+Rules come in two flavors:
+- Recording rules: Allow you to precompute frquent and expensive
+  expressions and to save their result as derived time series data.
+- Alerting rules: Allow you to define alert conditions.
+
+In the above configuration, the default *prometheus* job has one
+target: the Prometheus server itself. Prometheus assumes that metrics
+will be returned on the path ~/metrics~, so it appends this to the
+target and scrapers the address ~http://localhost:9000/metrics~.
+
+* Starting the server
+
+  #+begin_example
+  $ prometheus --config.file ./prometheus.yml
+  #+end_example
+
+You can visit [[http://localhost:9090/metrics][http://localhost:9090/metrics]] to see the actual raw metrics.
+  
+Validating the configuration file:
+
+#+begin_example
+$ promtool check config prometheus.yml
+#+end_example
+
+* Prometheus expression browser
+
+  It's available at [[http://localhost:9090/graph][http://localhost:9090/graph]]
+
+  PromQL query language can return four data types.
+
+  One of them is an instant vector: a set of time series containing a
+  single sample for each time series all sharing the same timestamp.
+
+* Time series aggregation
+
+  Examples:
+
+  #+begin_example
+  > sum(promhttp_metric_handler_requests_total) by (job)
+  > sum(rate(promhttp_metric_handler_requests_total[5m])) by (job)
+  #+end_example
+
+  The rate() function calculates the per second average rate of
+  increase of the time series in the range. This function should only
+  be used with counters.
+
+  *Range vectors* are a second PromQL data type containing a set of
+   time series with a range of data points over time for each time
+   series.
+
+   The duration of the range is enclosed in [] and has an integer
+   value followd by a unit abbreviatin:
+   - s for seconds
+   - m for minutes
+   - h for hours
+   - d for days
+   - w for weeks
+   - y for years
+
+   So here [5m] is a five minute range.
+
+   The two other data types are Scalars, numeric floating point values
+   and Strings which is currently unused.
+
+* Capacity planning
+
+** Memory
+
+Rule of thumb: multiple the number of samples being collected per
+second by the size of the samples.
+
+Promtail query for above:
+
+#+begin_src
+> rate(prometheus_tsdb_head_samples_appended_total[1m])
+#+end_src
+
+The query will show per second rate of samples being added to the
+database over last minute.
+
+** Disk
+
+By default, metrics are stored for 15 days in the local time series
+database.
