@@ -8,6 +8,7 @@ James TurnBull. You can access it in [[todo link][todo link]]
 - [[file:chapter1.org][Introduction]]
 - [[file:chapter2.org][Introduction to Prometheus]]
 - [[file:chapter3.org][Installation and Getting Started]]
+- [[file:chapter4.org][Monitoring Nodes and Containers]]
 
 ** Contributing
 
