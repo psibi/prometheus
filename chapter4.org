@@ -158,3 +158,55 @@ aggregated time series, from incoming time series. Use case:
 - Produce a time series that we could use to generate an alert.
 
 ** Configuring recording rules  
+
+   #+begin_src
+   $ mkdir -p rules
+   $ cd rules
+   $ touch node_rules.yml
+   #+end_src
+
+   Edit prometheus.yml:
+
+   #+begin_src
+   rule_files:
+   - "rules/node_rules.yml"
+   #+end_src
+
+   #+begin_src
+   $ cat rules/node_rules.yml
+   groups:
+   - name: node_rules
+     rules:
+     - record: instance:node_cpu:avg_rate5m
+       expr: 100 -avg (irate(node_cpu_seconds_total{job="node",mode="idle"}[tm])) by (instance) * 100
+   #+end_src
+
+* Visualization
+
+- Grafana supports variety of formats including Graphite,
+  Elasticsearch and Prometheus.
+- Prometheus isn't generally used for long term data retention-the
+  default is 15 days worth of time series. This means that Prometheus
+  is focused on immediate monitoring concerns than perhaps other
+  systems where visualization and dashboards are more important.
+
+* Installing Grafana
+
+- [[https://grafana.com/grafana/download][Instructions]]
+
+  #+begin_src
+  $ ./grafana-server --v
+  Version 7.1.5 (commit: 9893b8c53d, branch: HEAD)
+  #+end_src
+
+** Starting and configuring Grafana
+
+#+begin_src
+$ ./grafana-server
+#+end_src
+
+- Visit [[http://localhost:3000/login][http://localhost:3000/login]]
+- Default Credentials: admin for both username and passwords.
+- Add Prometheus data source.
+- You can import dashboards from the data source page of prometheus.
+- You can view those dashboards by going to the dashboards page!
