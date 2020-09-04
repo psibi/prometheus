@@ -134,3 +134,27 @@ We will monitor various host resources:
      -regex: 'kernelVersion'
       action: labeldrop
     #+end_src
+
+** Vector matches
+
+Vector matches attempt to find a matching element in the right hand
+side vector for each entry on the left hand side.
+
+Types:
+- One to one matches: Finds a unique pair of entries from each side of
+  the operation.
+- Many to one matches: are where each vector element on the "one" side
+  can match with multiple elements on the "many" side.
+
+* Query permancene
+
+** Recording rules
+
+Recording rules are a way to compute new time series, particularly
+aggregated time series, from incoming time series. Use case:
+
+- Produce aggregates across multiple time series.
+- Precompute expensive queries.
+- Produce a time series that we could use to generate an alert.
+
+** Configuring recording rules  
