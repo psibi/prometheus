@@ -1,0 +1,160 @@
+* Introduction
+
+Monitoring is the tools and processes by which you measure and manage
+your technology systems.
+
+Monitoring has two customers:
+- Technology: That's you, your team that maintain your technology
+  environment.
+- Business
+
+Monitoring anti-patterns:
+- Monitoring as afterthought.
+- Monitoring by rote
+- Non monitoring for correctness.
+- Monitoring statically.
+- Not monitoring frequently enough.
+- No automation or self-service.
+
+* Monitoring Mechanics
+
+** Probing and Instrospection
+
+Probing monitoring probesa the outside of an application. Example:
+Performing ICMP check and confirming you have recieved a
+response. Nagios is based on probe monitoring.
+
+Introspection monitoring looks at what's inside the application. The
+application is instrumented and returns measumenet of its state.
+
+Introspection monitoring communicates with more richer state of your
+application than probe monitoring. But probe monitoring might be the
+only monitoring you would be able to do for a third party website.
+
+** Pull versus push
+
+Pull based systems scrape or check a remote application.
+
+In push based systems, application emit events that are received by
+the monitoring system.
+
+Prometheus is primarily a pull based system, but it also supports
+receiving events pushed into a gateway.
+
+** Types of Monitoring data
+
+- Metrics
+- Logs: are (usually textual) events emitted from an application.
+
+* Metrics
+
+Metrics are measures of properties of components software or hardware.
+
+To make a metric useful we keep track of its state, generally
+recording data points over time. Those data points are called
+ovservations.
+
+A collection of observation is called time series.
+
+We generally collect observations at a fixed time interval - we call
+this the *granularity* or *resolution*.
+
+* Types of metrics
+
+** Gauges
+
+   Gauges are numbers that are expected to go up or down. Example: CPU
+   usage.
+
+** Counters
+
+   Counters are numbers that increase over time and never
+   decrease. Example: System uptime.
+
+** Histogram
+
+   Histogram is a metric that samples observations. [[https://www.mathsisfun.com/data/histograms.html][Reference]]
+
+* Metric Summaries
+
+Often single metric isn't useful and visualization of a metric
+requires applying mathematical transformations to it. Some common
+functions are:
+
+- Counter or n - Counts the number of observations in a specific time
+  interval.
+- Sum
+- Average
+- [[https://www.mathsisfun.com/median.html][Median]]
+- [[https://www.mathsisfun.com/data/percentiles.html][Percentile]]
+- [[https://www.mathsisfun.com/data/standard-deviation.html][Standard deviation]]
+- Rate of Change
+
+* Metric aggregation
+
+  Useful for showing aggregated views of metrics from multiple sources
+  aux as disk space usage of all your application servers.
+
+* Monitoring methodologies
+
+- Brendan Gregg's USE or Utilization Saturation and Errors method
+  which focuses on host level monitoring.
+- Google's Four Golden Signals which focuses on application level
+  monitoring.
+
+** The USE method
+
+The methodology proposes creating a checklist for server analysis that
+allows the fast identification of issues.
+
+The USE method can be summarized as: *For every resource, check
+utlilization, staturation, and errors*.
+
+Terminology:
+
+- A resource - A component of a system. In Gregg's definition of the
+  model it's traditionally a physical server component like CPUs.
+- Utilization: The average time the resource is busy doing work. It's
+  usually expressed as a percentage over time.
+- Saturation: The measure of queued work for a resource, work it can't
+  process yet. This is usually expressed as queue length.
+- Errors: The scalar count of error events for a resources.
+
+So we create a checklist of the resources and an approach to monitor
+each element of the methodlogy: utilization, saturation, and eerros.
+
+So, let's say we have a perf issue. We will consult the checklist and
+choose it's first resource. Assuming it's a CPU, we will go through
+this:
+
+- CPU utilization as a percentage over time.
+- CPU saturation as the number of processes waiting CPU time.
+- Errors, generally less important for the CPU resource.
+
+Once we are done, we will then consult the checklist again and chose
+the next resource (Eg: Memory). We go on through the checklist until
+we've identified the bottleneck.
+
+** The Google Four Golden Signals
+
+Compared to the USE method, the metric types in this methodlogy are
+more application or user facing.
+
+- Latency: The time taken to service a request, distinguishing between
+  the latency of successful and failed requests.
+- Traffic: The demand on your system. Eg: HTTP requests per second.
+- Errors: The rate the requests fail. Explicit failure like HTTP 500
+  or Implicit like invalid content being returned etc.
+- Saturation: The "fullness" of your application or the resources that
+  are constraining it - for example, memory or IO.
+
+Using golden signals is easy. Select high level metrics that match
+each signal and build alerts for them.
+
+* Contextual, useful alerts and notifications
+
+An alert is raised when something happens.
+
+Notification takes the alert and tells someone or something about
+it. Notification needs to be concise, articulate, accurate, digestible
+and actionable.
