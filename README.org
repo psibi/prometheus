@@ -11,6 +11,5 @@ James TurnBull. You can access it in [[todo link][todo link]]
 
 ** Contributing
 
-Contributions welcome. You would have to edit the [org
-files](https://en.wikipedia.org/wiki/Org-mode "org files") in the repo
-and send a PR!
+Contributions welcome. You would have to edit the [[https://en.wikipedia.org/wiki/Org-mode][org files]] in the
+repo and send a PR!
