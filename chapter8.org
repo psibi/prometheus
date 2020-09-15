@@ -1,0 +1,21 @@
+* Instrumenting Applications
+
+** Where should I instrument
+
+- Good places to start adding are at points of ingress and egress.
+
+* Metrics
+
+** Application metrics
+
+- Measure the performance and state of your application.
+
+** Business metrics
+
+- Measures the value of your application. Eg: How many sales you
+  made, latency of payment transaction etc.
+
+* Building metrics into a sample application
+
+You use the [[https://prometheus.io/docs/instrumenting/clientlibs/][client libraries]] for building metrics into the
+application.

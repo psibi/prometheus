@@ -1,0 +1,77 @@
+* Scaling and Reliability
+
+* Reliablity and fault tolerance
+
+- Faulot tolreance for monitoring services is addressed by making the
+  monitoring service highly availably usually by clustering the
+  implementation. Clustering solution however require complex
+  networking and management of state between nodes in the cluster.
+- The recommended fault toloreant solution for Prometheus is to run
+  two identically configured Prometheus servers in parallel, both
+  active at the same time. Duplicate alerts are handled upstream in
+  Alertmanager using it's grouping and inhibits capacity.
+- Alertmanager is made fault tolerant by creating a cluster of
+  Alertmanagers. All prometheus servers send alerts to all
+  Alertmanagers.
+
+  TODO: insert pic (pagae 219)
+
+** Setting up Alertmanager clustering
+
+- Cluster capability provided by Hashicorp's memberlist library which
+  uses a gossip based protocol.
+
+Let's say we have three hosts ~am1~, ~am2~ and ~am3~. We will use the
+~am1~ host to initiate the cluster.
+
+#+begin_src
+am1$ alertmanager --config.file alertmanager.yml --cluster.listen-address 172.19.0.10:8001
+am2$ alertmanager --config.file alertmanager.yml --cluster.listen-address 172.19.0.20:8001 --cluster.peer 172.19.0.10:8001
+am3$ alertmanager --config.file alertmanager.yml --cluster.listen-address 172.19.0.30:8001 --cluster.peer 172.19.0.10:8001
+#+end_src
+
+You can check that they are indeed clustered at [[https://127.0.0.1:9000/status][https://127.0.0.1:9000/status]]
+
+** Configuring Prometheus for an Alertmanager cluster
+
+   Edit prometheus.yml:
+
+   #+begin_src
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+      - am1:9093
+      - am2:9093
+      - am3:9093         
+   #+end_src
+
+   The above configuration assumes that the Prometheus server can
+   resolve DNS entries for each of the alertmanager.
+
+* Scaling
+
+  Scaling usually takes two forms:
+  - Functional scaling
+  - Horizontal scaling
+
+** Functional scaling
+
+- Splits monitoring concerns onto separate Prometheus servers.
+
+  TODO: Insert pic (Page 227, 228)
+
+** Horizontal shards
+
+- Horizontal sharding uses a series of worker prometheus servers each
+  of which scrapes a subset of targets. We then aggregate specific
+  time series we're interested in on the worker servers.
+- The proimary server not only pulls in the aggregated metrics but now
+  also acts as the default source for graphing or exposing metrics to
+  tools like Grafana.
+
+  TODO: Insert pic
+
+* Remote storage
+
+  Prometheus has the capability to write to remote stores of metrics.

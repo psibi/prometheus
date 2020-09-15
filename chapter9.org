@@ -1,0 +1,11 @@
+* Logging as Instrumentation
+
+- Log output oftern contains useful stats, timing and measurement
+  information.
+- Log entries can be used to create metrics and then scape them with
+  Prometheus.
+
+* Processing logs for metrics
+
+- [[https://github.com/fstab/grok_exporter][grok_exporter]]
+- [[https://github.com/google/mtail][mtail]]

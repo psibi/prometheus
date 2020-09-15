@@ -1,0 +1,64 @@
+* Service Discovery
+
+  So far for every target, we have been [[https://github.com/psibi/prometheus/blob/master/chapter4.org#configuring-the-textfile-collector][manually specifying the IP
+  address and port]] in their scrape configuration. This approach
+  doesn't scale for larger systems.
+
+  Prometheus solves it by using service discovery: automated
+  mechanisms to detect, classify, and identify new and changed
+  targets.
+
+  Variety of ways to use service discovery:
+
+  - Receiving list of targets from files populated via configuration
+    management tools.
+  - Quering an API like AWS API.
+  - Using DNS to return list of targets.
+
+** File-base Discovery
+
+   Edit prometheus.yml
+   
+   #+begin_src
+  scrape_configs:
+   - job_name: 'node'
+     file_sd_configs:
+      -files:
+       -targets/nodes/*.json
+       refreh_interval: 5m
+   #+end_src
+
+   #+begin_example
+   $ cat targets/nodes/nodes.json
+   [{
+   "targets": ["138.197.26.39:9100","138.197.26.39:9101"]
+   }]
+   #+end_example
+
+   We could also add labels:
+
+   #+begin_example
+   $ cat targets/nodes/nodes.json
+   [{
+   "targets": ["138.197.26.39:9100","138.197.26.39:9101"],
+   "labels": { "datacenter": "nj"}
+   }]
+   #+end_example   
+
+** Inbuilt service discovery plugins
+
+   Some platforms are supported by native [[https://prometheus.io/docs/prometheus/latest/configuration/configuration/#ec2_sd_config][service discovery]]
+   integrations. These [[https://github.com/prometheus/prometheus/tree/master/discovery][ship with]] Prometheus:
+
+   - [[https://prometheus.io/docs/prometheus/latest/configuration/configuration/#ec2_sd_config][Amazon EC2]]
+   - [[https://prometheus.io/docs/prometheus/latest/configuration/configuration/#azure_sd_config][Azure]]
+   - [[https://prometheus.io/docs/prometheus/latest/configuration/configuration/#gce_sd_config][Google Compute Cloud]]
+   - [[https://prometheus.io/docs/prometheus/latest/configuration/configuration/#kubernetes_sd_config][Kubernetes]]
+
+** DNS service discovery
+
+   This allows you to specify a list of DNS entries and then query
+   records in those entries to discover a list of targets. It relies
+   on querying A, AAAA or SRV records.
+
+   

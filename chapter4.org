@@ -178,7 +178,7 @@ aggregated time series, from incoming time series. Use case:
    - name: node_rules
      rules:
      - record: instance:node_cpu:avg_rate5m
-       expr: 100 -avg (irate(node_cpu_seconds_total{job="node",mode="idle"}[tm])) by (instance) * 100
+       expr: 100 -avg (irate(node_cpu_seconds_total{job="node",mode="idle"}[5m])) by (instance) * 100
    #+end_src
 
 * Visualization
@@ -189,6 +189,11 @@ aggregated time series, from incoming time series. Use case:
   default is 15 days worth of time series. This means that Prometheus
   is focused on immediate monitoring concerns than perhaps other
   systems where visualization and dashboards are more important.
+
+Some nice dashboards:
+
+- [[https://grafana.com/grafana/dashboards/9810][Kubernetes Pods/Container Resources]]
+- [[https://github.com/rchakode/kube-opex-analytics][kube-opex-analytics]]
 
 * Installing Grafana
 

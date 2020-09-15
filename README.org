@@ -9,6 +9,11 @@ James TurnBull. You can access it in [[todo link][todo link]]
 - [[file:chapter2.org][Introduction to Prometheus]]
 - [[file:chapter3.org][Installation and Getting Started]]
 - [[file:chapter4.org][Monitoring Nodes and Containers]]
+- [[file:chapter5.org][Service Discovery]]
+- [[file:chapter6.org][Alerting and Alertmanager]]
+- [[file:chapter7.org][Scaling and Reliability]]
+- [[file:chapter8.org][Instrumenting Applications]]
+- [[file:chapter9.org][Logging as Instrumentation]]
 
 ** Contributing
 

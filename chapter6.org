@@ -1,0 +1,231 @@
+* Alerting and Alertmanager
+
+  - Alerting is providded by a tool called Alertmanager.
+  - Alerting rules are defined on your prometheus server.
+
+* How the Alertmanager works
+
+  TODO: Insert pic
+
+* Installing Alertmanager
+
+  - Available as a standalone Go binary.
+  - [[https://github.com/prometheus/alertmanager/releases][Downloadable from Github releases]]
+
+  #+begin_example
+  $ cd alertmanager-0.21.0.linux-amd64
+  $ ls
+  alertmanager*  alertmanager.yml  amtool*  LICENSE  NOTICE
+  #+end_example
+
+  - *amtool* is used to help manage the alertmanager and schedule
+    maintenance windows from the command line.
+
+  #+begin_example
+  $ alertmanager --version
+  alertmanager, version 0.21.0 (branch: HEAD, revision: 4c6c03ebfe21009c546e4d1e9b92c371d67c021d)
+  build user:       root@dee35927357f
+  build date:       20200617-08:54:02
+  go version:       go1.14.4  
+  #+end_example
+
+* Configuring the Alertmanager
+
+  - alertmanager.yml is used to configure it. Default configuration
+    file:
+
+    #+begin_src
+$ bat alertmanager.yml
+───────┬──────────────────────────────────────────────
+       │ File: alertmanager.yml
+───────┼──────────────────────────────────────────────
+   1   │ global:
+   2   │   resolve_timeout: 5m
+   3   │
+   4   │ route:
+   5   │   group_by: ['alertname']
+   6   │   group_wait: 10s
+   7   │   group_interval: 10s
+   8   │   repeat_interval: 1h
+   9   │   receiver: 'web.hook'
+  10   │ receivers:
+  11   │ - name: 'web.hook'
+  12   │   webhook_configs:
+  13   │   - url: 'http://127.0.0.1:5001/'
+  14   │ inhibit_rules:
+  15   │   - source_match:
+  16   │       severity: 'critical'
+  17   │     target_match:
+  18   │       severity: 'warning'
+  19   │     equal: ['alertname', 'dev', 'instance']
+───────┴──────────────────────────────────────────────
+    #+end_src
+
+  - [[https://prometheus.io/docs/alerting/latest/configuration/][Official reference of the above configuration]]
+  - *route* block tells alertmanager what to do with specific incoming
+    alerts.
+  - *receiver* block specifies alert destination.
+
+* Running Alertmanger
+
+  #+begin_example
+  $ alertmanager --config.file alertmanager.yml
+  #+end_example
+
+  Access web interface on [[http://localhost:9093][http://localhost:9093]]
+
+** Configuring prometheus for Alertmanager
+
+   Edit prometheus.yml:
+   
+   #+begin_src
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets:
+      - alertmanager:9093
+   #+end_src
+
+   Re-run the prometheus server and you can see the configured
+   alertmanager in [[http://localhost:9090/status][http://localhost:9090/status]]
+
+** Monitoring Alertmanager
+
+   Even alertmanager exposes metrics, let's configure ~prometheus.yml~
+   to scrape it:
+
+   #+begin_src
+  - job_name: 'alertmanager'
+    static_configs:
+    - targets: ['localhost:9093']
+   #+end_src
+
+   This will scrape a series of time series prefixed with
+   *alertmanager_*
+
+* Adding alerting rules
+
+  #+begin_src
+  $ touch node_alerts.yml
+  #+end_src
+
+  Edit prometheus.yml:
+
+  #+begin_src
+  rule_files:
+   - "rules/node_alerts.yml"
+  #+end_src
+
+  #+begin_src
+$ bat rules/node_alerts.yml
+───────┬────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+       │ File: rules/node_alerts.yml
+───────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   1   │ groups:
+   2   │ - name: node_alerts
+   3   │   rules:
+   4   │   - alert: HighNodeCpu
+   5   │     expr: instance:node_cpu:avg_rate5m > 80
+   6   │     for: 60m
+   7   │     labels:
+   8   │      severity: warning
+   9   │     annotations:
+  10   │      summary: High Node CPU for 1 hour
+  11   │      console: You might want to check the Node Dashboard at http://working-grafana-url.com  
+  #+end_src
+
+  - Note that the metric *instance:node_cpu:avg_rate5m* was already
+    created in [[file:chapter4.org][Chapter 4]]
+  - Group name: *node_alerts*
+  - Alert name: *HighNodeCpu*
+  - In each alert group, the alert name needs to be unique.
+  - *expr* clause contains the expression that will trigger the alert.
+  - *for* clause controls the length of time the test expression must
+    be true for before the alert is fired.
+  - *label* clause allows us to specify additional labels to be
+    attached to the alert.
+  - *annotation* clause allows us to specify informational labels like
+    a description, a link to a run book, or instructions on how to
+    handle the alert.
+
+* Alert States
+
+- *Inactive*: The alert is not active
+- *Pending*: The alert has met the expression but is still waiting for
+  the duration specified in the *for* clause.
+- *Firing*: Alert has met the expression and has been in *Pending*
+  state for longer than the druation of the *for* clause.
+
+  You can see the above states in [[http://localhost:9090/alerts][Prometheus dashboard]]
+
+* Routing
+
+- Alertmanager needs to route to various destinations.
+- Routing acts like a tree. The top, default route is always
+  configured and matches anything that isn't matched by a child route.
+
+  #+begin_src
+route:
+  group_by: ['alertname']
+  group_wait: 10s
+  group_interval: 10s
+  repeat_interval: 1h
+  receiver: 'email'
+  routes:
+    - match:
+        severity: critical
+      receiver: pager
+    - match_re:
+        severity: ^(warning|critical)$
+      receiver: support_team
+receivers:
+- name: 'email'
+  email_configs:
+  - to: 'alerts@example.com'
+- name: 'pager'
+  email_configs:
+  - to: 'alert-pager@example.com'
+- name: 'support_team'
+  email_configs:
+  - to: 'support@example.com'
+  #+end_src
+
+- *group_by* controls how the Alertmanager groups alerts. In the above
+  example all alerts from a specific instance will be grouped
+  together.
+- *group_wait* is to see if other alerts from that group are received
+  before firing the alerts.
+- *group_interval*: After alerts are fired, if new alerts from the
+  next evaulation are received for the grouping, Alertmanager will
+  wait for the peroid mentioned in the ~group_interval~ option before
+  sending the new alerts. This is to prevent alert floods for grouping
+  of alerts.
+- *repeat_interval* is a pause that is applied to each single alert
+  and is the period to wait to resend the same alert.
+
+** Resolution alerts
+
+- These are alerts generated when the alert condition has been resolved.
+- [[https://prometheus.io/docs/alerting/latest/configuration/#email_config][Configured via send_resolved in your receiver configuration]]
+- Sending resolution alerts is not recommended.
+
+* Silences and maintenance
+
+- Prometheus calls muting of alerts as a "silence"  .
+- Useful if you want to take your service down for maintenance and
+  don't want alarms to be triggered.
+- Silences can be set for specific period or you can manually expire
+  it.
+
+You can schedule silences using
+
+- Alertmanager dashboard: [[http://localhost:9093/][http://localhost:9093/]]
+- *amtool* CLI ([[https://github.com/prometheus/alertmanager#amtool][Tutorial here]])
+
+* References
+
+- [[https://github.com/samber/awesome-prometheus-alerts][Github repo: Awesome prometheus alerts]]
+  - [[https://awesome-prometheus-alerts.grep.to/][Webpage]]
+- [[https://github.com/jpweber/prometheus-alert-rules][Github repo: Prometheus alert rules]]
+
+  
