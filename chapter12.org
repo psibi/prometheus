@@ -1,0 +1,18 @@
+* Monitoring a stack - Kubernetes
+
+** Related projects
+
+- [[https://github.com/prometheus-operator/prometheus-operator][prometheus-operator]]: Configures prometheus cluster atop kubernetes.
+  - [[https://github.com/prometheus-operator/prometheus-operator/tree/master/Documentation][Documentation]]
+- [[https://github.com/kubernetes/kube-state-metrics#metrics-documentation][kube-state-metrics]]: Add-on agent to generate and expose cluster-level metrics
+  - [[https://github.com/kubernetes/kube-state-metrics#metrics-documentation][kube-state-metrics Documentation]]
+    - 
+- [[https://github.com/google/cadvisor][cAdvisor]]:cAdvisor (Container Advisor) provides container users an
+  understanding of the resource usage and performance characteristics
+  of their running containers.
+  - [[https://github.com/google/cadvisor/blob/master/docs/storage/prometheus.md][Metric Documentation with Prometheus]]
+
+** References
+
+- [[https://help.sumologic.com/Metrics/Kubernetes_Metrics][Various k8s metrics]]
+

@@ -194,6 +194,9 @@ Some nice dashboards:
 
 - [[https://grafana.com/grafana/dashboards/9810][Kubernetes Pods/Container Resources]]
 - [[https://github.com/rchakode/kube-opex-analytics][kube-opex-analytics]]
+- [[https://grafana.com/grafana/dashboards/193][Container dashboards]]
+- [[https://grafana.com/grafana/dashboards/22][Node exporter single dashboard]]
+- [[https://grafana.com/grafana/dashboards/315][Kubernetes cluster monitoring]]
 
 * Installing Grafana
 
