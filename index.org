@@ -18,7 +18,7 @@ James TurnBull. You can access it via [[https://psibi.in/prometheus][https://psi
 
 ** Publishing
 
-- Go to [[file:README.org][README.org]] file.
+- Go to [[file:index.org][index.org]] file.
 - Invoke ~org-publish~
 
 ** Static images
