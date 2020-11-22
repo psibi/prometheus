@@ -86,7 +86,7 @@ We will monitor various host resources:
 
 ** Scrape Lifecycle
 
-   TODO: Add diagram (page 104)
+   [[file:assets/scrape-lifecycle.png]]
 
 ** Labels
 
@@ -99,7 +99,7 @@ We will monitor various host resources:
    We already get two topological labels for free with every metric:
    job and instance.
 
-   TODO: Add diagram (page 106)
+   [[file:assets/label-taxonomy.png]]
 
 ** Relabelling
 

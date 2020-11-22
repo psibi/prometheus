@@ -11,6 +11,7 @@
   understanding of the resource usage and performance characteristics
   of their running containers.
   - [[https://github.com/google/cadvisor/blob/master/docs/storage/prometheus.md][Metric Documentation with Prometheus]]
+  - cAdvisor is integrated into the kubelete binary.
 
 ** References
 

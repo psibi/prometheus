@@ -2,7 +2,7 @@
 
 * Reliablity and fault tolerance
 
-- Faulot tolreance for monitoring services is addressed by making the
+- Fault tolreance for monitoring services is addressed by making the
   monitoring service highly availably usually by clustering the
   implementation. Clustering solution however require complex
   networking and management of state between nodes in the cluster.
@@ -14,7 +14,7 @@
   Alertmanagers. All prometheus servers send alerts to all
   Alertmanagers.
 
-  TODO: insert pic (pagae 219)
+  [[file:assets/fault-tolerance-arch.png]]
 
 ** Setting up Alertmanager clustering
 
@@ -59,7 +59,7 @@ alerting:
 
 - Splits monitoring concerns onto separate Prometheus servers.
 
-  TODO: Insert pic (Page 227, 228)
+  [[file:assets/functional-sharding.png]]
 
 ** Horizontal shards
 
@@ -70,7 +70,7 @@ alerting:
   also acts as the default source for graphing or exposing metrics to
   tools like Grafana.
 
-  TODO: Insert pic
+  [[file:assets/horizontal-sharding.png]]
 
 * Remote storage
 

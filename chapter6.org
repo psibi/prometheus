@@ -5,7 +5,7 @@
 
 * How the Alertmanager works
 
-  TODO: Insert pic
+  [[file:assets/alertmanager-arch.png]]
 
 * Installing Alertmanager
 

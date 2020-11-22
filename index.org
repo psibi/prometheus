@@ -1,7 +1,7 @@
 * Monitoring with Prometheus
 
 This contains my notes for the book Monitoring with Prometheus by
-James TurnBull. You can access it in [[todo link][todo link]]
+James TurnBull. You can access it via [[https://psibi.in/prometheus][https://psibi.in/prometheus]]
 
 ** Chapters
 
@@ -14,8 +14,24 @@ James TurnBull. You can access it in [[todo link][todo link]]
 - [[file:chapter7.org][Scaling and Reliability]]
 - [[file:chapter8.org][Instrumenting Applications]]
 - [[file:chapter9.org][Logging as Instrumentation]]
+- [[file:chapter12.org][Monitoring a stack - Kubernetes]]
+
+** Publishing
+
+- Go to [[file:README.org][README.org]] file.
+- Invoke ~org-publish~
+
+** Static images
+
+- Have images under /docs/assets/
+- Create symbolic of it in the main directory:
+
+#+begin_src sh
+$ ln -s $PWD/docs/assets/ $PWD/assets
+#+end_src
+
 
 ** Contributing
 
 Contributions welcome. You would have to edit the [[https://en.wikipedia.org/wiki/Org-mode][org files]] in the
-repo and send a PR!
+[[https://github.com/psibi/prometheus][repository]] and send a PR!
