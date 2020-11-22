@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="en">
+<head>
+<title></title>
+<!-- 2020-11-22 Sun 13:41 -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="Org-mode">
+<meta name="author" content="Sibi Prabakaran">
+
+<link  href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<style>
+/* org mode styles on top of twbs */
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+body {
+    font-size: 18px;
+    margin-bottom: 105px;
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 101px;
+    background-color: #f5f5f5;
+}
+
+footer > div {
+    padding: 10px;
+}
+
+footer p {
+    margin: 0 0 5px;
+    text-align: center;
+    font-size: 16px;
+}
+
+#table-of-contents {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+blockquote p {
+    font-size: 18px;
+}
+
+pre {
+    font-size: 16px;
+}
+
+.footpara {
+    display: inline-block;
+}
+
+figcaption {
+  font-size: 16px;
+  color: #666;
+  font-style: italic;
+  padding-bottom: 15px;
+}
+
+/* from twbs docs */
+
+.bs-docs-sidebar.affix {
+    position: static;
+}
+@media (min-width: 768px) {
+    .bs-docs-sidebar {
+        padding-left: 20px;
+    }
+}
+
+/* All levels of nav */
+.bs-docs-sidebar .nav > li > a {
+    display: block;
+    padding: 4px 20px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #999;
+}
+.bs-docs-sidebar .nav > li > a:hover,
+.bs-docs-sidebar .nav > li > a:focus {
+    padding-left: 19px;
+    color: #A1283B;
+    text-decoration: none;
+    background-color: transparent;
+    border-left: 1px solid #A1283B;
+}
+.bs-docs-sidebar .nav > .active > a,
+.bs-docs-sidebar .nav > .active:hover > a,
+.bs-docs-sidebar .nav > .active:focus > a {
+    padding-left: 18px;
+    font-weight: bold;
+    color: #A1283B;
+    background-color: transparent;
+    border-left: 2px solid #A1283B;
+}
+
+/* Nav: second level (shown on .active) */
+.bs-docs-sidebar .nav .nav {
+    display: none; /* Hide by default, but at >768px, show it */
+    padding-bottom: 10px;
+}
+.bs-docs-sidebar .nav .nav > li > a {
+    padding-top: 1px;
+    padding-bottom: 1px;
+    padding-left: 30px;
+    font-size: 12px;
+    font-weight: normal;
+}
+.bs-docs-sidebar .nav .nav > li > a:hover,
+.bs-docs-sidebar .nav .nav > li > a:focus {
+    padding-left: 29px;
+}
+.bs-docs-sidebar .nav .nav > .active > a,
+.bs-docs-sidebar .nav .nav > .active:hover > a,
+.bs-docs-sidebar .nav .nav > .active:focus > a {
+    padding-left: 28px;
+    font-weight: 500;
+}
+
+/* Nav: third level (shown on .active) */
+.bs-docs-sidebar .nav .nav .nav {
+    padding-bottom: 10px;
+}
+.bs-docs-sidebar .nav .nav .nav > li > a {
+    padding-top: 1px;
+    padding-bottom: 1px;
+    padding-left: 40px;
+    font-size: 12px;
+    font-weight: normal;
+}
+.bs-docs-sidebar .nav .nav .nav > li > a:hover,
+.bs-docs-sidebar .nav .nav .nav > li > a:focus {
+    padding-left: 39px;
+}
+.bs-docs-sidebar .nav .nav .nav > .active > a,
+.bs-docs-sidebar .nav .nav .nav > .active:hover > a,
+.bs-docs-sidebar .nav .nav .nav > .active:focus > a {
+    padding-left: 38px;
+    font-weight: 500;
+}
+
+/* Show and affix the side nav when space allows it */
+@media (min-width: 992px) {
+    .bs-docs-sidebar .nav > .active > ul {
+        display: block;
+    }
+    /* Widen the fixed sidebar */
+    .bs-docs-sidebar.affix,
+    .bs-docs-sidebar.affix-bottom {
+        width: 213px;
+    }
+    .bs-docs-sidebar.affix {
+        position: fixed; /* Undo the static from mobile first approach */
+        top: 20px;
+    }
+    .bs-docs-sidebar.affix-bottom {
+        position: absolute; /* Undo the static from mobile first approach */
+    }
+    .bs-docs-sidebar.affix .bs-docs-sidenav,.bs-docs-sidebar.affix-bottom .bs-docs-sidenav {
+        margin-top: 0;
+        margin-bottom: 0
+    }
+}
+@media (min-width: 1200px) {
+    /* Widen the fixed sidebar again */
+    .bs-docs-sidebar.affix-bottom,
+    .bs-docs-sidebar.affix {
+        width: 263px;
+    }
+}
+</style>
+<script>
+$(function() {
+    'use strict';
+
+    $('.bs-docs-sidebar li').first().addClass('active');
+
+    $(document.body).scrollspy({target: '.bs-docs-sidebar'});
+
+    $('.bs-docs-sidebar').affix();
+});
+</script>
+</head>
+<body>
+<div id="org-div-home-and-up">
+ <a accesskey="h" href="https://psibi.in/prometheus/"> UP </a>
+ |
+ <a accesskey="H" href="https://psibi.in/"> HOME </a>
+</div><div id="content" class="container">
+<div class="row"><div class="col-md-3 col-md-push-9"><nav id="table-of-contents">
+<div id="text-table-of-contents" class="bs-docs-sidebar">
+<ul class="nav">
+<li><a href="#sec-1">1. Installation and Getting started</a></li>
+<li><a href="#sec-2">2. Configuring prometheus</a></li>
+<li><a href="#sec-3">3. Starting the server</a></li>
+<li><a href="#sec-4">4. Prometheus expression browser</a></li>
+<li><a href="#sec-5">5. Time series aggregation</a></li>
+<li><a href="#sec-6">6. Capacity planning</a>
+<ul class="nav">
+<li><a href="#sec-6-1">6.1. Memory</a></li>
+<li><a href="#sec-6-2">6.2. Disk</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</nav>
+</div><div class="col-md-9 col-md-pull-3"><h1 class="title"></h1>
+<div id="outline-container-sec-1" class="outline-2">
+<h2 id="sec-1"><span class="section-number-2">1</span> Installation and Getting started</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+Available as a single binary. Download and uncompress it on your
+machine:
+</p>
+
+<pre class="example">
+$ cd prometheus-2.20.1.linux-amd64/
+$ ./prometheus --version
+prometheus, version 2.20.1 (branch: HEAD, revision: 983ebb4a513302315a8117932ab832815f85e3d2)
+  build user:       root@7cbd4d1c15e0
+  build date:       20200805-17:26:58
+  go version:       go1.14.6
+$ ls
+console_libraries/  consoles/  LICENSE  NOTICE  prometheus*  prometheus.yml  promtool*  tsdb*
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-2" class="outline-2">
+<h2 id="sec-2"><span class="section-number-2">2</span> Configuring prometheus</h2>
+<div class="outline-text-2" id="text-2">
+<pre class="example">
+$ bat prometheus.yml
+───────┬────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+       │ File: prometheus.yml
+───────┼────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+   1   │ # my global config
+   2   │ global:
+   3   │   scrape_interval:     15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+   4   │   evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
+   5   │   # scrape_timeout is set to the global default (10s).
+   6   │
+   7   │ # Alertmanager configuration
+   8   │ alerting:
+   9   │   alertmanagers:
+  10   │   - static_configs:
+  11   │     - targets:
+  12   │       # - alertmanager:9093
+  13   │
+  14   │ # Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+  15   │ rule_files:
+  16   │   # - "first_rules.yml"
+  17   │   # - "second_rules.yml"
+  18   │
+  19   │ # A scrape configuration containing exactly one endpoint to scrape:
+  20   │ # Here it's Prometheus itself.
+  21   │ scrape_configs:
+  22   │   # The job name is added as a label `job=&lt;job_name&gt;` to any timeseries scraped from this config.
+  23   │   - job_name: 'prometheus'
+  24   │
+  25   │     # metrics_path defaults to '/metrics'
+  26   │     # scheme defaults to 'http'.
+  27   │
+  28   │     static_configs:
+  29   │     - targets: ['localhost:9090']
+───────┴────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+</pre>
+
+<p>
+Rules come in two flavors:
+</p>
+<ul class="org-ul">
+<li>Recording rules: Allow you to precompute frquent and expensive
+expressions and to save their result as derived time series data.
+</li>
+<li>Alerting rules: Allow you to define alert conditions.
+</li>
+</ul>
+
+<p>
+In the above configuration, the default <b>prometheus</b> job has one
+target: the Prometheus server itself. Prometheus assumes that metrics
+will be returned on the path <code>/metrics</code>, so it appends this to the
+target and scrapers the address <code>http://localhost:9000/metrics</code>.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-3" class="outline-2">
+<h2 id="sec-3"><span class="section-number-2">3</span> Starting the server</h2>
+<div class="outline-text-2" id="text-3">
+<pre class="example">
+$ prometheus --config.file ./prometheus.yml
+</pre>
+
+<p>
+You can visit <a href="http://localhost:9090/metrics">http://localhost:9090/metrics</a> to see the actual raw metrics.
+</p>
+
+<p>
+Validating the configuration file:
+</p>
+
+<pre class="example">
+$ promtool check config prometheus.yml
+</pre>
+</div>
+</div>
+
+<div id="outline-container-sec-4" class="outline-2">
+<h2 id="sec-4"><span class="section-number-2">4</span> Prometheus expression browser</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+It's available at <a href="http://localhost:9090/graph">http://localhost:9090/graph</a>
+</p>
+
+<p>
+PromQL query language can return four data types.
+</p>
+
+<p>
+One of them is an instant vector: a set of time series containing a
+single sample for each time series all sharing the same timestamp.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-5" class="outline-2">
+<h2 id="sec-5"><span class="section-number-2">5</span> Time series aggregation</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+Examples:
+</p>
+
+<pre class="example">
+&gt; sum(promhttp_metric_handler_requests_total) by (job)
+&gt; sum(rate(promhttp_metric_handler_requests_total[5m])) by (job)
+</pre>
+
+<p>
+The rate() function calculates the per second average rate of
+increase of the time series in the range. This function should only
+be used with counters.
+</p>
+
+<p>
+<b>Range vectors</b> are a second PromQL data type containing a set of
+ time series with a range of data points over time for each time
+ series.
+</p>
+
+<p>
+The duration of the range is enclosed in [] and has an integer
+value followd by a unit abbreviatin:
+</p>
+<ul class="org-ul">
+<li>s for seconds
+</li>
+<li>m for minutes
+</li>
+<li>h for hours
+</li>
+<li>d for days
+</li>
+<li>w for weeks
+</li>
+<li>y for years
+</li>
+</ul>
+
+<p>
+So here [5m] is a five minute range.
+</p>
+
+<p>
+The two other data types are Scalars, numeric floating point values
+and Strings which is currently unused.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-6" class="outline-2">
+<h2 id="sec-6"><span class="section-number-2">6</span> Capacity planning</h2>
+<div class="outline-text-2" id="text-6">
+</div><div id="outline-container-sec-6-1" class="outline-3">
+<h3 id="sec-6-1"><span class="section-number-3">6.1</span> Memory</h3>
+<div class="outline-text-3" id="text-6-1">
+<p>
+Rule of thumb: multiple the number of samples being collected per
+second by the size of the samples.
+</p>
+
+<p>
+Promtail query for above:
+</p>
+
+<pre class="example">
+&gt; rate(prometheus_tsdb_head_samples_appended_total[1m])
+</pre>
+
+<p>
+The query will show per second rate of samples being added to the
+database over last minute.
+</p>
+</div>
+</div>
+
+<div id="outline-container-sec-6-2" class="outline-3">
+<h3 id="sec-6-2"><span class="section-number-3">6.2</span> Disk</h3>
+<div class="outline-text-3" id="text-6-2">
+<p>
+By default, metrics are stored for 15 days in the local time series
+database.
+</p>
+</div>
+</div>
+</div>
+</div></div></div>
+<footer id="postamble" class="">
+<div><p class="author">Author: Sibi Prabakaran</p>
+<p class="date">Created: 2020-11-22 Sun 13:41</p>
+<p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="http://orgmode.org">Org-mode</a> 9.4)</p>
+</div>
+</footer>
+</body>
+</html>
