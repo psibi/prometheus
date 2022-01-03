@@ -70,12 +70,97 @@ target and scrapers the address ~http://localhost:9000/metrics~.
   #+end_example
 
 You can visit [[http://localhost:9090/metrics][http://localhost:9090/metrics]] to see the actual raw metrics.
-  
+
 Validating the configuration file:
 
 #+begin_example
 $ promtool check config prometheus.yml
 #+end_example
+
+* PromQL data types
+
+PromQL expression or subexpression can evaulate to four data types:
+
+- String literals
+- Scalar: numeric floating point value
+- Instant vector
+- Range vector
+
+** Instant vector
+
+- When you group a set of metrics in a single point in time, you get
+  the instant vector data type.
+
+Example:
+
+#+begin_example sh
+> prometheus_http_requests_total{code="200"}
+prometheus_http_requests_total{code="200", container="prometheus", endpoint="web", handler="/-/ready", instance="192.168.128.4:9090", job="test-kube-prometheus-st-prometheus", namespace="test-system", pod="prometheus-test-kube-prometheus-st-prometheus-0", service="test-kube-prometheus-st-prometheus"}
+844990
+prometheus_http_requests_total{code="200", container="prometheus", endpoint="web", handler="/-/reload", instance="192.168.128.4:9090", job="test-kube-prometheus-st-prometheus", namespace="test-system", pod="prometheus-test-kube-prometheus-st-prometheus-0", service="test-kube-prometheus-st-prometheus"}
+6
+prometheus_http_requests_total{code="200", container="prometheus", endpoint="web", handler="/api/v1/label/:name/values", instance="192.168.128.4:9090", job="test-kube-prometheus-st-prometheus", namespace="test-system", pod="prometheus-test-kube-prometheus-st-prometheus-0", service="test-kube-prometheus-st-prometheus"}
+20
+prometheus_http_requests_total{code="200", container="prometheus", endpoint="web", handler="/api/v1/metadata", instance="192.168.128.4:9090", job="test-kube-prometheus-st-prometheus", namespace="test-system", pod="prometheus-test-kube-prometheus-st-prometheus-0", service="test-kube-prometheus-st-prometheus"}
+4
+prometheus_http_requests_total{code="200", container="prometheus", endpoint="web", handler="/api/v1/query", instance="192.168.128.4:9090", job="test-kube-prometheus-st-prometheus", namespace="test-system", pod="prometheus-test-kube-prometheus-st-prometheus-0", service="test-kube-prometheus-st-prometheus"}
+590
+prometheus_http_requests_total{code="200", container="prometheus", endpoint="web", handler="/api/v1/query_range", instance="192.168.128.4:9090", job="test-kube-prometheus-st-prometheus", namespace="test-system", pod="prometheus-test-kube-prometheus-st-prometheus-0", service="test-kube-prometheus-st-prometheus"}
+531
+prometheus_http_requests_total{code="200", container="prometheus", endpoint="web", handler="/api/v1/series", instance="192.168.128.4:9090", job="test-kube-prometheus-st-prometheus", namespace="test-system", pod="prometheus-test-kube-prometheus-st-prometheus-0", service="test-kube-prometheus-st-prometheus"}
+85
+prometheus_http_requests_total{code="200", container="prometheus", endpoint="web", handler="/api/v1/targets", instance="192.168.128.4:9090", job="test-kube-prometheus-st-prometheus", namespace="test-system", pod="prometheus-test-kube-prometheus-st-prometheus-0", service="test-kube-prometheus-st-prometheus"}
+1
+prometheus_http_requests_total{code="200", container="prometheus", endpoint="web", handler="/favicon.ico", instance="192.168.128.4:9090", job="test-kube-prometheus-st-prometheus", namespace="test-system", pod="prometheus-test-kube-prometheus-st-prometheus-0", service="test-kube-prometheus-st-prometheus"}
+2
+prometheus_http_requests_total{code="200", container="prometheus", endpoint="web", handler="/graph", instance="192.168.128.4:9090", job="test-kube-prometheus-st-prometheus", namespace="test-system", pod="prometheus-test-kube-prometheus-st-prometheus-0", service="test-kube-prometheus-st-prometheus"}
+4
+prometheus_http_requests_total{code="200", container="prometheus", endpoint="web", handler="/manifest.json", instance="192.168.128.4:9090", job="test-kube-prometheus-st-prometheus", namespace="test-system", pod="prometheus-test-kube-prometheus-st-prometheus-0", service="test-kube-prometheus-st-prometheus"}
+1
+prometheus_http_requests_total{code="200", container="prometheus", endpoint="web", handler="/metrics", instance="192.168.128.4:9090", job="test-kube-prometheus-st-prometheus", namespace="test-system", pod="prometheus-test-kube-prometheus-st-prometheus-0", service="test-kube-prometheus-st-prometheus"}
+140828
+prometheus_http_requests_total{code="200", container="prometheus", endpoint="web", handler="/static/*filepath", instance="192.168.128.4:9090", job="test-kube-prometheus-st-prometheus", namespace="test-system", pod="prometheus-test-kube-prometheus-st-prometheus-0", service="test-kube-prometheus-st-prometheus"}
+12
+#+end_example
+
+** Range vector
+
+- An array of vectors over time gives you the range vector.
+- Syntactically, you get a range vector when you query an instant
+  vector and append a time selector such as [5m].
+
+#+begin_example sh
+> prometheus_http_requests_total{code="200"}[5m]
+prometheus_http_requests_total{code="200", container="prometheus", endpoint="web", handler="/-/ready", instance="192.168.128.4:9090", job="test-kube-prometheus-st-prometheus", namespace="test-system", pod="prometheus-test-kube-prometheus-st-prometheus-0", service="test-kube-prometheus-st-prometheus"}
+845014 @1641194293.637
+845020 @1641194323.637
+845026 @1641194353.637
+845032 @1641194383.637
+845038 @1641194413.637
+845044 @1641194443.637
+845050 @1641194473.637
+845056 @1641194503.637
+845062 @1641194533.637
+845068 @1641194563.637
+prometheus_http_requests_total{code="200", container="prometheus", endpoint="web", handler="/-/reload", instance="192.168.128.4:9090", job="test-kube-prometheus-st-prometheus", namespace="test-system", pod="prometheus-test-kube-prometheus-st-prometheus-0", service="test-kube-prometheus-st-prometheus"}
+6 @1641194293.637
+6 @1641194323.637
+6 @1641194353.637
+6 @1641194383.637
+6 @1641194413.637
+6 @1641194443.637
+6 @1641194473.637
+6 @1641194503.637
+6 @1641194533.637
+6 @1641194563.637
+.....
+#+end_example
+
+
+** Reference
+
+- [[https://prometheus.io/docs/prometheus/latest/querying/basics/][Official docs]]
+- [[https://grafana.com/blog/2020/02/04/introduction-to-promql-the-prometheus-query-language/][Grafana blog: Introduction to PromQL]]
 
 * Prometheus expression browser
 

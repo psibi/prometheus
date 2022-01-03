@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <title></title>
-<!-- 2020-11-22 Sun 14:02 -->
+<!-- 2022-01-03 Mon 13:00 -->
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="generator" content="Org-mode">
@@ -191,11 +191,7 @@ $(function() {
 </script>
 </head>
 <body>
-<div id="org-div-home-and-up">
- <a accesskey="h" href="https://psibi.in/prometheus/"> UP </a>
- |
- <a accesskey="H" href="https://psibi.in/"> HOME </a>
-</div><div id="content" class="container">
+<div id="content" class="container">
 <div class="row"><div class="col-md-3 col-md-push-9"><nav id="table-of-contents">
 <div id="text-table-of-contents" class="bs-docs-sidebar">
 <ul class="nav">
@@ -262,11 +258,10 @@ Let's say we have three hosts <code>am1</code>, <code>am2</code> and <code>am3</
 <code>am1</code> host to initiate the cluster.
 </p>
 
-<pre class="example">
-am1$ alertmanager --config.file alertmanager.yml --cluster.listen-address 172.19.0.10:8001
+<div class="highlight"><pre><span></span>am1$ alertmanager --config.file alertmanager.yml --cluster.listen-address 172.19.0.10:8001
 am2$ alertmanager --config.file alertmanager.yml --cluster.listen-address 172.19.0.20:8001 --cluster.peer 172.19.0.10:8001
 am3$ alertmanager --config.file alertmanager.yml --cluster.listen-address 172.19.0.30:8001 --cluster.peer 172.19.0.10:8001
-</pre>
+</pre></div>
 
 <p>
 You can check that they are indeed clustered at <a href="https://127.0.0.1:9000/status">https://127.0.0.1:9000/status</a>
@@ -281,15 +276,14 @@ You can check that they are indeed clustered at <a href="https://127.0.0.1:9000/
 Edit prometheus.yml:
 </p>
 
-<pre class="example">
-alerting:
+<div class="highlight"><pre><span></span>alerting:
   alertmanagers:
   - static_configs:
     - targets:
       - am1:9093
       - am2:9093
-      - am3:9093         
-</pre>
+      - am3:9093
+</pre></div>
 
 <p>
 The above configuration assumes that the Prometheus server can
@@ -363,8 +357,8 @@ Prometheus has the capability to write to remote stores of metrics.
 </div></div></div>
 <footer id="postamble" class="">
 <div><p class="author">Author: Sibi Prabakaran</p>
-<p class="date">Created: 2020-11-22 Sun 14:02</p>
-<p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 27.1 (<a href="http://orgmode.org">Org-mode</a> 9.4)</p>
+<p class="date">Created: 2022-01-03 Mon 13:00</p>
+<p class="creator"><a href="http://www.gnu.org/software/emacs/">Emacs</a> 27.2 (<a href="http://orgmode.org">Org-mode</a> 9.4.4)</p>
 </div>
 </footer>
 </body>
